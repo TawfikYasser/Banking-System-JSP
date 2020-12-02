@@ -6,13 +6,13 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpSession;
 import java.util.*;
@@ -23,8 +23,8 @@ import javax.servlet.http.Cookie;
  *
  * @author tawfe
  */
-@WebServlet(urlPatterns = {"/validate"})
-public class validate extends HttpServlet {
+@WebServlet(urlPatterns = {"/transfer"})
+public class transfer extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,9 +38,10 @@ public class validate extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        HttpSession session = request.getSession(true);
         try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
             try {
+
                 Class.forName("com.mysql.jdbc.Driver");
                 String url = "jdbc:mysql://localhost:3306/a2_web?useSSL=false";
                 String user = "root";
@@ -48,74 +49,60 @@ public class validate extends HttpServlet {
                 Connection connection = null;
                 Statement statement = null;
                 connection = DriverManager.getConnection(url, user, password);
-                String query = "SELECT * FROM customer";
-
                 statement = connection.createStatement();
 
-                String userID = request.getParameter("id");
-                String userPassword = request.getParameter("password");
+                String query2 = "SELECT * FROM bankaccount";
+                Statement s = null;
+                s = connection.createStatement();
+                ResultSet rs = s.executeQuery(query2);
 
-                //First: Checking for Empty fields
-                if (userID.isEmpty() || userPassword.isEmpty()) {
-                    //Go back to HTML page to relogin
-                    out.print("No data entered");
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("index.html");
+                String userID = request.getParameter("myhiddenvalueID");
+                String RecID = request.getParameter("toid");
+                String Amount = request.getParameter("amount");
+                String balance = request.getParameter("myhiddenvalueBalance");
+                int iAmount = Integer.valueOf(Amount);
+                int iBalance = Integer.valueOf(balance);
+                int flag = 0;
+                if ((Amount.isEmpty() || RecID.isEmpty()) && (iBalance <= iAmount)) {
+                    out.println("Invalid data");
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("transactions.jsp");
                     dispatcher.forward(request, response);
                 } else {
-                    /*
-                    * Check if entered data exists in customer table
-                     */
-                    int flag = 0;
-                    String correctID = "", correctPassword = "", customerName = "";
-                    ResultSet resultSet = statement.executeQuery(query);
 
-                    for (int i = 0; resultSet.next(); i++) {
-
-                        if (resultSet.getString("customerID").equals(userID) && resultSet.getString("customerPassword").equals(userPassword)) {
+                    while (rs.next()) {
+                        if (rs.getString("BankAccountID").toString().equals(RecID)) {
+                            //Rec ID exists
                             flag++;
-                            correctID = resultSet.getString("customerID");
-                            correctPassword = resultSet.getString("customerPassword");
-                            customerName = resultSet.getString("customerName");
                         }
-
                     }
-                    statement.close();
+
                     if (flag != 0) {
-
-                        // First initializing a new session for the customer
-                        
-                        /*if (session.isNew() == false) {
-                            session.invalidate();
-                            session = request.getSession(true);
-                        }*/
-                        session.setAttribute("session_customerID", correctID);
-                        session.setAttribute("session_customerPassword", correctPassword);
-                        session.setAttribute("session_customerName", customerName);
-
-                        //Second initializing a new cookie for the customer
-                        //Date now = new Date();
-                        //String timestamp = now.toString();
-                        Cookie cookie_ID = new Cookie("cookie_customerID", correctID);
-                        cookie_ID.setMaxAge(365 * 24 * 60 * 60);
-                        cookie_ID.setPath("/");
-                        response.addCookie(cookie_ID);
-
-                        //Third Go to Customer Home page
-                        request.setAttribute("BankAccountID", "v");
-                        RequestDispatcher dispatcher = request.getRequestDispatcher("customerHome.jsp");
+                        Random rand = new Random(); //instance of random class
+                        int upperbound = 1000;
+                        int randomTransactionID = rand.nextInt(upperbound);
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                        Date date = new Date();
+                        String query = "INSERT INTO banktransaction(BankTransactionID, BTCreationDate, BTAmount, BTFromAccountID, BTToAccountID) VALUES("
+                                + "'" + randomTransactionID + "',"
+                                + "'" + formatter.format(date) + "',"
+                                + "'" + Amount + "',"
+                                + "'" + userID + "',"
+                                + "'" + RecID + "')";
+                        int affectedRows = statement.executeUpdate(query);
+                        RequestDispatcher dispatcher = request.getRequestDispatcher("transactions.jsp");
                         dispatcher.forward(request, response);
+                        statement.close();
                     } else {
-                        RequestDispatcher dispatcher = request.getRequestDispatcher("index.html");
+                        RequestDispatcher dispatcher = request.getRequestDispatcher("transactions.jsp");
                         dispatcher.forward(request, response);
+                        statement.close();
                     }
 
                 }
 
             } catch (Exception e) {
-                System.err.println("Got an exception! ");
                 e.printStackTrace();
             }
-
         }
     }
 

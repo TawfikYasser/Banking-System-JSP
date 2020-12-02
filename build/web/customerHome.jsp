@@ -8,6 +8,7 @@
 <%@page import="java.sql.*" %>
 <!DOCTYPE html>
 <%
+
     String BankAccount = "";
     if (request.getParameter("BankAccountID") == null) {
         BankAccount = "";
@@ -179,32 +180,32 @@
                 <%
 
                     try {
-                        
-                            Class.forName("com.mysql.jdbc.Driver");
-                            String url = "jdbc:mysql://localhost:3306/a2_web?useSSL=false";
-                            String userDB = "root";
-                            String passwordDB = "troot";
-                            Connection connection = null;
-                            Statement statement = null;
-                            ResultSet resultSet = null;
-                            connection = DriverManager.getConnection(url, userDB, passwordDB);
-                            String query = "SELECT * FROM bankaccount";
-                            statement = connection.createStatement();
-                            //Check if the customer has a bank account
-                            resultSet = statement.executeQuery(query);
-                            while (resultSet.next()) {
-                                if (resultSet.getString("BACustomerID").toString().equals(id)) {
-                                    //Current customer has a bank account
 
-                                    BankAccount = resultSet.getString("BankAccountID").toString();
-                                }
+                        Class.forName("com.mysql.jdbc.Driver");
+                        String url = "jdbc:mysql://localhost:3306/a2_web?useSSL=false";
+                        String userDB = "root";
+                        String passwordDB = "troot";
+                        Connection connection = null;
+                        Statement statement = null;
+                        ResultSet resultSet = null;
+                        connection = DriverManager.getConnection(url, userDB, passwordDB);
+                        String query = "SELECT * FROM bankaccount";
+                        statement = connection.createStatement();
+                        //Check if the customer has a bank account
+                        resultSet = statement.executeQuery(query);
+                        while (resultSet.next()) {
+                            if (resultSet.getString("BACustomerID").toString().equals(id)) {
+                                //Current customer has a bank account
+
+                                BankAccount = resultSet.getString("BankAccountID").toString();
                             }
+                        }
                 %>
 
                 <% if (!BankAccount.isEmpty()) {%>
-                <h3>Bank Account ID: <%=BankAccount%></h3>
+                <h3 style="text-align: center;margin: 50px; font-family: Roboto; color: #27a327">Bank Account ID: <%=BankAccount%></h3>
                 <% } else {%>
-                <h3>You don’t have a bank account.</h3>
+                <h3 style="text-align: center;margin: 50px; font-family: Roboto; color: red">You don’t have a bank account.</h3>
                 <%}%>
 
             </form>
