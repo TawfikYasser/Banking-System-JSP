@@ -42,64 +42,116 @@ public class transfer extends HttpServlet {
             /* TODO output your page here. You may use following sample code. */
             try {
 
-                Class.forName("com.mysql.jdbc.Driver");
-                String url = "jdbc:mysql://localhost:3306/a2_web?useSSL=false";
-                String user = "root";
-                String password = "troot";
-                Connection connection = null;
-                Statement statement = null;
-                connection = DriverManager.getConnection(url, user, password);
-                statement = connection.createStatement();
-
-                String query2 = "SELECT * FROM bankaccount";
-                Statement s = null;
-                s = connection.createStatement();
-                ResultSet rs = s.executeQuery(query2);
+                String Amount = request.getParameter("amount");
+                String balance = request.getParameter("myhiddenvalueBalance");
 
                 String userID = request.getParameter("myhiddenvalueID");
                 String RecID = request.getParameter("toid");
-                String Amount = request.getParameter("amount");
-                String balance = request.getParameter("myhiddenvalueBalance");
-                int iAmount = Integer.valueOf(Amount);
-                int iBalance = Integer.valueOf(balance);
-                int flag = 0;
-                if ((Amount.isEmpty() || RecID.isEmpty()) && (iBalance <= iAmount)) {
-                    out.println("Invalid data");
+
+                if ((Amount.isEmpty() || RecID.isEmpty())) {
                     RequestDispatcher dispatcher = request.getRequestDispatcher("transactions.jsp");
                     dispatcher.forward(request, response);
                 } else {
-
-                    while (rs.next()) {
-                        if (rs.getString("BankAccountID").toString().equals(RecID)) {
-                            //Rec ID exists
-                            flag++;
-                        }
-                    }
-
-                    if (flag != 0) {
-                        Random rand = new Random(); //instance of random class
-                        int upperbound = 1000;
-                        int randomTransactionID = rand.nextInt(upperbound);
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                        Date date = new Date();
-                        String query = "INSERT INTO banktransaction(BankTransactionID, BTCreationDate, BTAmount, BTFromAccountID, BTToAccountID) VALUES("
-                                + "'" + randomTransactionID + "',"
-                                + "'" + formatter.format(date) + "',"
-                                + "'" + Amount + "',"
-                                + "'" + userID + "',"
-                                + "'" + RecID + "')";
-                        int affectedRows = statement.executeUpdate(query);
+                    int iAmount = Integer.valueOf(Amount);
+                    int iBalance = Integer.valueOf(balance);
+                    if (iBalance <= iAmount) {
+                        //Balance not enough
                         RequestDispatcher dispatcher = request.getRequestDispatcher("transactions.jsp");
                         dispatcher.forward(request, response);
-                        statement.close();
                     } else {
-                        RequestDispatcher dispatcher = request.getRequestDispatcher("transactions.jsp");
-                        dispatcher.forward(request, response);
-                        statement.close();
+
+                        //Balance enough
+                        Class.forName("com.mysql.jdbc.Driver");
+                        String url = "jdbc:mysql://localhost:3306/a2_web?useSSL=false";
+                        String user = "root";
+                        String password = "troot";
+                        Connection connection = null;
+                        Statement statement = null;
+                        connection = DriverManager.getConnection(url, user, password);
+                        statement = connection.createStatement();
+
+                        String query2 = "SELECT * FROM bankaccount";
+                        Statement s = null;
+                        s = connection.createStatement();
+                        ResultSet rs = s.executeQuery(query2);
+
+                        Statement updateBalance = null;
+                        updateBalance = connection.createStatement();
+
+                        Statement updateRecBalanceS = null;
+                        updateRecBalanceS = connection.createStatement();
+
+                        Statement recBalance = null;
+                        recBalance = connection.createStatement();
+
+                        int flag = 0;
+                        if ((Amount.isEmpty() || RecID.isEmpty())) {
+                            out.println("Invalid data");
+                            RequestDispatcher dispatcher = request.getRequestDispatcher("transactions.jsp");
+                            dispatcher.forward(request, response);
+                        } else {
+
+                            while (rs.next()) {
+                                if (rs.getString("BankAccountID").toString().equals(RecID)) {
+                                    //Rec ID exists
+                                    flag++;
+                                }
+                            }
+
+                            if (flag != 0) {
+                                Random rand = new Random(); //instance of random class
+                                int upperbound = 1000;
+                                int randomTransactionID = rand.nextInt(upperbound);
+                                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                Date date = new Date();
+                                String query = "INSERT INTO banktransaction(BankTransactionID, BTCreationDate, BTAmount, BTFromAccountID, BTToAccountID) VALUES("
+                                        + "'" + randomTransactionID + "',"
+                                        + "'" + formatter.format(date) + "',"
+                                        + "'" + Amount + "',"
+                                        + "'" + userID + "',"
+                                        + "'" + RecID + "')";
+                                int affectedRows = statement.executeUpdate(query);
+
+                                //Updating sender balance after transaction
+                                String updateSenderBalance = "UPDATE bankaccount SET BACurrentBalance = "
+                                        + "'" + (iBalance - iAmount) + "'"
+                                        + "WHERE (BankAccountID = " + Integer.valueOf(userID) + ");";
+
+                                int updateAffectedS = updateBalance.executeUpdate(updateSenderBalance);
+
+                                //Updating receiver balance after transaction
+                                //1. Get receiver balance
+                                String gRecBalance = "SELECT * FROM bankaccount WHERE bankaccount.BankAccountID = '" + Integer.valueOf(RecID) + "'";
+                                ResultSet resBalance = recBalance.executeQuery(gRecBalance);
+                                String recCurrentBalance = "";
+                                while (resBalance.next()) {
+                                    if (resBalance.getString("BankAccountID").toString().equals(String.valueOf(RecID))) {
+                                        recCurrentBalance = resBalance.getString("BACurrentBalance");
+                                    }
+                                }
+                                int iRecBalance = Integer.valueOf(recCurrentBalance);
+
+                                //2. Set the new balance for receiver
+                                String updateRecQBalance = "UPDATE bankaccount SET BACurrentBalance = "
+                                        + "'" + (iRecBalance + iAmount) + "'"
+                                        + "WHERE (BankAccountID = '"
+                                        + Integer.valueOf(RecID) + "');";
+
+                                int updatedAffecteR = updateRecBalanceS.executeUpdate(updateRecQBalance);
+
+                                RequestDispatcher dispatcher = request.getRequestDispatcher("transactions.jsp");
+                                dispatcher.forward(request, response);
+                                statement.close();
+                            } else {
+                                RequestDispatcher dispatcher = request.getRequestDispatcher("transactions.jsp");
+                                dispatcher.forward(request, response);
+                                statement.close();
+                            }
+
+                        }
+
                     }
-
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }

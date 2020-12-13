@@ -3,12 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/tawfe/OneDrive/Documents/NetBeansProjects/WebApplication1/src/java/transfer.java</file>
-            <file>file:/C:/Users/tawfe/OneDrive/Documents/NetBeansProjects/WebApplication1/web/customerHome.jsp</file>
-            <file>file:/C:/Users/tawfe/OneDrive/Documents/NetBeansProjects/WebApplication1/web/transactions.jsp</file>
-            <file>file:/C:/Users/tawfe/OneDrive/Documents/NetBeansProjects/WebApplication1/src/java/addaccount.java</file>
-            <file>file:/C:/Users/tawfe/OneDrive/Documents/NetBeansProjects/WebApplication1/web/index.html</file>
-            <file>file:/C:/Users/tawfe/OneDrive/Documents/NetBeansProjects/WebApplication1/src/java/validate.java</file>
+            <file>file:/T:/Projects/Banking-System-JSP-main/web/index.html</file>
+            <file>file:/T:/Projects/Banking-System-JSP-main/src/java/cancelTransaction.java</file>
+            <file>file:/T:/Projects/Banking-System-JSP-main/web/transactions.jsp</file>
+            <file>file:/T:/Projects/Banking-System-JSP-main/web/customerHome.jsp</file>
+            <file>file:/T:/Projects/Banking-System-JSP-main/src/java/transfer.java</file>
+            <file>file:/T:/Projects/Banking-System-JSP-main/src/java/addaccount.java</file>
+            <file>file:/T:/Projects/Banking-System-JSP-main/src/java/validate.java</file>
         </group>
     </open-files>
 </project-private>

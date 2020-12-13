@@ -63,11 +63,11 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
         <link rel="icon" href="bank.png">
         <style>
-            
+
             body{
                 margin: 0;
                 padding: 20px;
-                
+
             }
             *{
                 box-sizing: border-box;
@@ -85,7 +85,7 @@
             table{
                 width: 100%;
                 margin-left: 50%;
-                margin-top: 15%;
+                margin-top: 20%;
                 transform: translate(-50%,-50%);
                 border-collapse: collapse;
                 border-spacing: 0;
@@ -180,7 +180,8 @@
     </head>
     <body>
         <h1>Hello <%=name%></h1>
-        <h3>Your transactions </h3>
+        <h3 style="color: #27a327">Your Transactions Page</h3>
+        <h3 style="color: #5144F3">Your balance: <%=balance%></h3>
 
         <form action="transfer" >
             <input type="text" class="form-control" name="toid" placeholder="Account ID">
@@ -224,7 +225,12 @@
                         <input type="submit" class="cancelTransactionDisabled" value="Cancel Transaction">
                     </form>
                     <%} else {%>
-                    <form action="">
+                    <form action="cancelTransaction">
+                        <input type="hidden" name="myhiddenvalueID" value=<%=BankAccount%> />
+                        <input type="hidden" name="toid" value=<%=tResultSet.getString("BTToAccountID")%> />
+                        <input type="hidden" name="amountC" value=<%=tResultSet.getString("BTAmount")%> />
+                        <input type="hidden" name="senderBalance" value=<%=balance%> />
+                        <input type="hidden" name="transactionID" value=<%=tResultSet.getString("BankTransactionID")%> />
                         <input type="submit" class="cancelTransaction" value="Cancel Transaction">
                     </form>
                     <%}%>

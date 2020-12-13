@@ -83,7 +83,6 @@ public class validate extends HttpServlet {
                     if (flag != 0) {
 
                         // First initializing a new session for the customer
-                        
                         /*if (session.isNew() == false) {
                             session.invalidate();
                             session = request.getSession(true);
