@@ -223,7 +223,7 @@
                 <input  type="submit" class="btnAddAcount" value="Add Account">
                 <%}%>
             </form>
-            <form action="transactions.jsp" method="Get">
+            <form action="transactions.jsp" method="Post">
                 <% if (!BankAccount.isEmpty()) {%>
                 <input  type="submit" class="btnTransaction" value="Transactions">
                 <% } else {%>

@@ -5,8 +5,8 @@
         <group>
             <file>file:/T:/Projects/Banking-System-JSP-main/web/index.html</file>
             <file>file:/T:/Projects/Banking-System-JSP-main/src/java/cancelTransaction.java</file>
-            <file>file:/T:/Projects/Banking-System-JSP-main/web/transactions.jsp</file>
             <file>file:/T:/Projects/Banking-System-JSP-main/web/customerHome.jsp</file>
+            <file>file:/T:/Projects/Banking-System-JSP-main/web/transactions.jsp</file>
             <file>file:/T:/Projects/Banking-System-JSP-main/src/java/transfer.java</file>
             <file>file:/T:/Projects/Banking-System-JSP-main/src/java/addaccount.java</file>
             <file>file:/T:/Projects/Banking-System-JSP-main/src/java/validate.java</file>

@@ -183,7 +183,7 @@
         <h3 style="color: #27a327">Your Transactions Page</h3>
         <h3 style="color: #5144F3">Your balance: <%=balance%></h3>
 
-        <form action="transfer" >
+        <form action="transfer" method="Post">
             <input type="text" class="form-control" name="toid" placeholder="Account ID">
             <input type="text" class="form-control" name="amount" placeholder="Amount">
             <input type="hidden" name="myhiddenvalueID" value=<%=BankAccount%> />
@@ -221,11 +221,11 @@
                         long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
                         if (diff > 1) {
                     %>
-                    <form action="">
-                        <input type="submit" class="cancelTransactionDisabled" value="Cancel Transaction">
+                    <form>
+                        <input type="submit" class="cancelTransactionDisabled" value="Cancel Transaction" disabled>
                     </form>
                     <%} else {%>
-                    <form action="cancelTransaction">
+                    <form action="cancelTransaction" method="Post">
                         <input type="hidden" name="myhiddenvalueID" value=<%=BankAccount%> />
                         <input type="hidden" name="toid" value=<%=tResultSet.getString("BTToAccountID")%> />
                         <input type="hidden" name="amountC" value=<%=tResultSet.getString("BTAmount")%> />

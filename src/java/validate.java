@@ -58,9 +58,13 @@ public class validate extends HttpServlet {
                 //First: Checking for Empty fields
                 if (userID.isEmpty() || userPassword.isEmpty()) {
                     //Go back to HTML page to relogin
-                    out.print("No data entered");
+
                     RequestDispatcher dispatcher = request.getRequestDispatcher("index.html");
-                    dispatcher.forward(request, response);
+                    dispatcher.include(request, response);
+                    out.println("<script type=\"text/javascript\">");
+                    out.println("alert('Empty ID or Password');");
+                    out.println("</script>");
+
                 } else {
                     /*
                     * Check if entered data exists in customer table
@@ -104,8 +108,13 @@ public class validate extends HttpServlet {
                         RequestDispatcher dispatcher = request.getRequestDispatcher("customerHome.jsp");
                         dispatcher.forward(request, response);
                     } else {
+                        //Customer does not found!
+
                         RequestDispatcher dispatcher = request.getRequestDispatcher("index.html");
-                        dispatcher.forward(request, response);
+                        dispatcher.include(request, response);
+                        out.println("<script type=\"text/javascript\">");
+                        out.println("alert('Customer doesn’t found!');");
+                        out.println("</script>");
                     }
 
                 }

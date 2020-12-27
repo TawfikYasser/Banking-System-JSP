@@ -50,14 +50,20 @@ public class transfer extends HttpServlet {
 
                 if ((Amount.isEmpty() || RecID.isEmpty())) {
                     RequestDispatcher dispatcher = request.getRequestDispatcher("transactions.jsp");
-                    dispatcher.forward(request, response);
+                    dispatcher.include(request, response);
+                    out.println("<script type=\"text/javascript\">");
+                    out.println("alert('Empty Account ID or Amount!');");
+                    out.println("</script>");
                 } else {
                     int iAmount = Integer.valueOf(Amount);
                     int iBalance = Integer.valueOf(balance);
                     if (iBalance <= iAmount) {
                         //Balance not enough
                         RequestDispatcher dispatcher = request.getRequestDispatcher("transactions.jsp");
-                        dispatcher.forward(request, response);
+                        dispatcher.include(request, response);
+                        out.println("<script type=\"text/javascript\">");
+                        out.println("alert('Amount is greater than your balance: " + iBalance + "!');");
+                        out.println("</script>");
                     } else {
 
                         //Balance enough
@@ -86,9 +92,9 @@ public class transfer extends HttpServlet {
 
                         int flag = 0;
                         if ((Amount.isEmpty() || RecID.isEmpty())) {
-                            out.println("Invalid data");
                             RequestDispatcher dispatcher = request.getRequestDispatcher("transactions.jsp");
-                            dispatcher.forward(request, response);
+                            dispatcher.include(request, response);
+
                         } else {
 
                             while (rs.next()) {
@@ -144,7 +150,10 @@ public class transfer extends HttpServlet {
                                 statement.close();
                             } else {
                                 RequestDispatcher dispatcher = request.getRequestDispatcher("transactions.jsp");
-                                dispatcher.forward(request, response);
+                                dispatcher.include(request, response);
+                                out.println("<script type=\"text/javascript\">");
+                                out.println("alert('Receiver Account doesn’t found!');");
+                                out.println("</script>");
                                 statement.close();
                             }
 
