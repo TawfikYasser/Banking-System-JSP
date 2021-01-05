@@ -1,14 +1,13 @@
 <%-- 
     Document   : customerHome
     Created on : Dec 1, 2020, 9:15:45 PM
-    Author     : tawfe
+    Author     : tawfek
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.sql.*" %>
 <!DOCTYPE html>
 <%
-
     String BankAccount = "";
     if (request.getParameter("BankAccountID") == null) {
         BankAccount = "";
